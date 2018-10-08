@@ -40,7 +40,7 @@ const crypto = require("crypto");
  *  NUM_NODES  - number of simultaneous nodes to simulate.
  *  PERIOD_SEC - period of time between simulated node data transmissions.
  */
-const NUM_NODES = 10;
+const NUM_NODES = 100;
 const PERIOD_SEC = 10;
 
 /* Connect to mainnet or a local test net.
@@ -195,7 +195,7 @@ function prepareHeaders(expireInSeconds, callback)
      * than getting the head block time which is just going to be approximately 'now' anyways.
      */
     nowDate = new Date()
-    expireDate = new Date(nowDate.getTime() + (30 * 1000))
+    expireDate = new Date(nowDate.getTime() + (60 * 1000))
     expiration = expireDate.toISOString().split('.')[0] /* drop the milliseconds for EOS format */
     transactionHeaders.expiration = expiration
     console.log("  expiration = " + transactionHeaders.expiration)
@@ -274,6 +274,16 @@ function runNode(node)
     var name = node.wallet.name;
     console.log(name)
 
+    /* Get current time of formation of this transaction.
+     * This time is compared to the current block time to estimate latency.
+     * The block time is in units of seconds (uint32) so we do the same here.
+     */
+    nowTimeSec = Math.floor(new Date().getTime() / 1000)
+    //expireDate = new Date(nowDate.getTime() + (30 * 1000))
+    //expiration = expireDate.toISOString().split('.')[0] /* drop the milliseconds for EOS format */
+    console.log(nowTimeSec)
+
+
     /* Submit data */
     var transaction = 
         {
@@ -288,7 +298,8 @@ function runNode(node)
                     data : {
                         user : name,
                         unique_id : node.uniqueid,
-                        memo : "EOS IoT node network stress test"
+                        node_time : nowTimeSec,
+                        memo : "eosiot.io network stress test"
                     }
                 }
             ]

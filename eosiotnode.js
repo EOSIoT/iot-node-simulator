@@ -46,18 +46,19 @@ const PERIOD_SEC = 10;
 /* Connect to mainnet or a local test net.
  * Differences include: testnet doesn't support list of block producers
  */
-const USE_MAINNET = false;
+//const USE_MAINNET = false;
+const USE_MAINNET = true;
 
-const API_URL = 'http://localhost:8888';
+//const API_URL = 'http://localhost:8888';
 //const API_URL = 'http://mainnet.eoscalgary.io';
-
+const API_URL = 'http://jungle.cryptolions.io:18888'
 
 /* Array of strings of URLs to be randomly assigned to nodes */ 
 var APIEndpoints = [];
 
 /* Array of EOS accounts to be randomly assigned to nodes */
 var wallets = [
-    { name : "node", wifprivkey : "5Jmsawgsp1tQ3GD6JyGCwy1dcvqKZgX6ugMVMdjirx85iv5VyPR" }
+    { name : "<your account>", wifprivkey : "<your key>" } // jungle
 ];
 
 /* Node attributes:
@@ -67,14 +68,17 @@ var wallets = [
 */
 var nodes = [];
 
+/* Return random element of the provided array */
 function rand(arr)
 {
     var i = Math.floor(Math.random() * arr.length);
-    //console.log(i + " " + arr.length);
     return arr[i];
 }
 
 
+/* 
+ * Instantiate a node instance and add it to the node list.
+ */
 function instantiateNode(id)
 {
     const uniqueid = crypto.randomBytes(16).toString("hex");
@@ -113,26 +117,19 @@ function instantiateNode(id)
 // EOS instance configuration
 config = {
 
-// Parameters for the mainnet
-  //chainId: "aca376f206b8fc256ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906", // 32 byte (64 char) hex string
-  //keyProvider: [''], // WIF string or array of keys..
-  //httpEndpoint: ,
+  // http://mainnet.eoscalgary.io/v1/chain/get_info
+  // The chainId is a hash of genesis.json and remains the same for a given testnet configuration
+  // Use cleos get info
+  // Parameters for the mainnet
+  //chainId: "aca376f206b8fc256ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906", // Mainnet
+  chainId : "038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca", // Jungle Test net
+  //chainId: "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f", // local test net
 
-// Parameters for local testnet
-// Used these keys for all accounts.  Same key as used on eos.io smart contract tutorials.
-//Private key: 5Jmsawgsp1tQ3GD6JyGCwy1dcvqKZgX6ugMVMdjirx85iv5VyPR
-//Public key: EOS7ijWCBmoXBi3CgtK7DJxentZZeTkeUnaSDvyro9dq7Sd1C3dC4
-
-// The chainId is a hash of genesis.json and remains the same for a given testnet configuration
-// Use cleos get info
-  chainId: "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f", // 32 byte (64 char) hex string
   httpEndpoint: API_URL,
-
   expireInSeconds: 60,
   broadcast: true,
   verbose: false, // API activity
   sign: true,
-
   transactionHeaders: prepareHeaders  //(expireInSeconds, callback) => {callback(null/*error*/, headers)} 
 }
 
@@ -151,7 +148,7 @@ async function genAPIEndpoints()
     //cleos system listproducers -l 100
     // /v1/chain/get_producers
     prod = await eos.getProducers({"limit": 21, "json" : true})
-    //console.log(prod);
+    console.log(prod);
 
     // prod structure:
 /*
@@ -167,17 +164,12 @@ async function genAPIEndpoints()
 */
     for (var i = 0; i < prod.rows.length; i++) {
         var bp = prod.rows[i]
+        if (bp.url == undefined || bp.url == '') {continue}
         APIEndpoints.push(bp.url)
     }
 
     console.log(APIEndpoints);
 }
-
-// http://mainnet.eoscalgary.io/v1/chain/get_info
-
-
-// All keys in keyProvider will sign.
-//eos = Eos({httpEndpoint: null, chainId, keyProvider, transactionHeaders})
 
 var transactionHeaders = {}
 
@@ -205,7 +197,6 @@ function prepareHeaders(expireInSeconds, callback)
 
 // Wrap in async to use 'await' operation
 async function main() {
-
 
     console.log("Build transaction headers...")
 
@@ -250,6 +241,10 @@ function keyProvider(arg1, arg2, arg3)
     console.log(arg3)
 }
 
+
+/*
+ * Node timer callback. 
+ */
 function runNode(node)
 {
     console.log("running node " + node.id);
@@ -259,18 +254,6 @@ function runNode(node)
         node.init = false;
     }
 
-    // Grab a new EOS object configured to use the static transaction headers
-    
-
-    //eos.getInfo()
-    //info = await eos.getInfo({})
-    //console.log(info)
-    //await eos.getInfo({}) // @returns {Promise}
-    //eos.getInfo((error, result) => { console.log(error, result) })
-    //block = await eos.getBlock(info.head_block_num)
-    //console.log(block)
-
-
     var name = node.wallet.name;
     console.log(name)
 
@@ -279,10 +262,7 @@ function runNode(node)
      * The block time is in units of seconds (uint32) so we do the same here.
      */
     nowTimeSec = Math.floor(new Date().getTime() / 1000)
-    //expireDate = new Date(nowDate.getTime() + (30 * 1000))
-    //expiration = expireDate.toISOString().split('.')[0] /* drop the milliseconds for EOS format */
     console.log(nowTimeSec)
-
 
     /* Submit data */
     var transaction = 
@@ -325,5 +305,6 @@ function runNode(node)
 
 }
 
-
+/* Start! */
 main();
+

@@ -1,0 +1,27 @@
+{
+  "name": "iot-node-simulator",
+  "version": "1.0.0",
+  "description": "Simulates may IoT nodes connecting to an eosio-based blockchain",
+  "main": "eosiotnode.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EOSIoT/iot-node-simulator.git"
+  },
+  "keywords": [
+    "EOS",
+    "IoT"
+  ],
+  "author": "Evan Ross",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EOSIoT/iot-node-simulator/issues"
+  },
+  "homepage": "https://github.com/EOSIoT/iot-node-simulator#readme",
+  "dependencies": {
+    "eosjs": "^20.0.3",
+    "node-fetch": "^2.6.0"
+  }
+}

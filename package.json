@@ -22,6 +22,6 @@
   "homepage": "https://github.com/EOSIoT/iot-node-simulator#readme",
   "dependencies": {
     "eosjs": "^20.0.3",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.1"
   }
 }

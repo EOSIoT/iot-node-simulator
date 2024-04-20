@@ -28,11 +28,11 @@ the necessary permissions encoded in the script to push transactions to the simu
 this software.  
 With this configuration, the load from 1000 nodes is distributed over the resources assigned to the 5 accounts:
 
-* https://telos.bloks.io/account/eosiot11node
-* https://telos.bloks.io/account/eosiot12node
-* https://telos.bloks.io/account/eosiot13node
-* https://telos.bloks.io/account/eosiot14node
-* https://telos.bloks.io/account/eosiot15node
+* [eosiot11node](https://eosauthority.com/account/eosiot11node?network=telostest)
+* [eosiot12node](https://eosauthority.com/account/eosiot12node?network=telostest)
+* [eosiot13node](https://eosauthority.com/account/eosiot13node?network=telostest)
+* [eosiot14node](https://eosauthority.com/account/eosiot14node?network=telostest)
+* [eosiot15node](https://eosauthority.com/account/eosiot15node?network=telostest)
 
 ### Simulation Operation
 
@@ -83,7 +83,7 @@ You pressed the "p" key
 
 Here you will see that after 250 transactions (this is from an ongoing simulation) the mean TPS was 2.08, tending toward the expected mean of 1.7.
 
-Alternatively you can view the state on a [block explorer](https://telos.bloks.io/account/eosiotstress?loadContract=true&tab=Tables&account=eosiotstress&scope=eosiotstress&limit=100&table=statetable)
+Alternatively you can view the state on a [block explorer](https://eosauthority.com/account/eosiotstress?network=telostest&scope=eosiotstress&table=statetable&limit=10&index_position=1&key_type=i64&reverse=0&mode=contract&sub=tables).
 
 After 559 transactions, the mean TPS was getting closer to 1.7.  The latency statistics show that the average delay in processing a transaction was about 4 seconds, with a maximum of 36 seconds.
 
@@ -139,7 +139,7 @@ Lastly, after 1693 transactions, a TPS mean of 1.78 was observed.
 
 ### Simulation dApp
 
-The IoT node simulation software sends transactions to a smart contract (dApp) loaded on the [eosiotstress](https://telos.bloks.io/account/eosiotstress)
+The IoT node simulation software sends transactions to a smart contract (dApp) loaded on the [eosiotstress](https://eosauthority.com/account/eosiotstress?network=telostest)
 account.  You will see the transactions for all nodes in the blocks.io transaction log.
 
 The source code for the dApp is at this [repository](https://github.com/EOSIoT/iot-node-simulator-contract).

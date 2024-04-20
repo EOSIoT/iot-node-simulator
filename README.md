@@ -4,7 +4,7 @@ This simulator software puts **real** transactions from multiple simulated IoT s
 
 The goal of this simulation is to understand the actual performance of an EOSIO blockchain when ingesting and distributing data
 from potentially thousands or millions of IoT devices, and specifically for the **Measurement Earth Global Open Data Platform**
-https://measurement.earth
+https://www.measurement.earth
 
 This simulator has been designed to support the [TELOS](https://www.telos.net/) blockchain out of the box.  The TELOS chain has a number of attractive
 features including demonstrated stability, a transparent governance model, and plentiful resources at a resonable cost.

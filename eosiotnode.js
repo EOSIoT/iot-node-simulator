@@ -70,11 +70,11 @@ const crypto = require("crypto");
 const NUM_NODES         = 1000;
 const PERIOD_SEC        = 600;
 const POOL_SIZE_MAX     = 21;
-const TAPOS_EXPIRY_S    = 3600;
+const TAPOS_EXPIRY_S    = 3500;
 
 const USE_EOS_MAINNET = 0;
-const USE_TELOS_MAINNET = 1;
-const USE_JUNGLE_TESTNET = 0;
+const USE_TELOS_MAINNET = 0;
+const USE_TELOS_TESTNET = 1;
 
 /* Enable to populate the API pool with the bootstrap endpoints
  * rather than discover them automatically.
@@ -93,38 +93,40 @@ const USE_BOOTSTRAP_ENDPOINTS = 1;
 const BOOTSTRAP_INFO_EOS_MAINNET = {
     chain_id: "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906",
     bootstrap_ap_list: [
-        "http://eos.eoscafeblock.com",
+        "",
 
     ]
 };
 
-const BOOTSTRAP_INFO_JUNGLE2_TESTNET = {
-    chain_id: "e70aaab8997e1dfce58fbfac80cbbb8fecec7b99cf982a9444273cbc64c41473",
+/* Node list https://validate.eosnation.io/telostest/ */
+const BOOTSTRAP_INFO_TELOS_TESTNET = {
+    chain_id: "1eaa0824707c8c16bd25145493bf062aecddfeb56c736f6ba6397f3195f33c9f",
     bootstrap_ap_list: [
-        "http://jungle.atticlab.net:8888",
+        "http://testnet.telos.net",
+        "http://telostest.api.eosnation.io",        //   https://eosnation.io/telostest.json
+        "http://api.testnet.telosunlimited.io",     //   https://telosunlimited.io/bp.json
+        "http://test.telos.eosusa.io",              //   https://eosusa.io/bp/telos/test/bp.json
+        "http://telostestnet.greymass.com"          //   https://www.greymass.com/bp/telos.json
     ]
 };
 
 const BOOTSTRAP_INFO_TELOS_MAINNET = {
     chain_id: "4667b205c6838ef70ff7988f6e8257e8be0e1284a2f59699054a018f743b1d11",
     bootstrap_ap_list: [
-        "http://telos.eoscafeblock.com",
-        "http://telos.caleos.io",
-        "http://api.eos.miami",
-        "http://api.telos.telosgreen.com",
-        "http://api.telosmadrid.io",
-        "http://telos.cryptosuvi.io"
+        "http://mainnet.telos.net",
     ]
 };
 
-/* This private key corresponds to public key EOS5vTZaF1iBWfMG4zQjDo8DY98ERomWdw9V4gVJYk6B7u3mZBD5B
+/* This private key corresponds to public key EOS82rGcJWkHYhYK2NfGCHTuWZ1fGNE7ar2V8DCp3EjRkXDTvoJ7M
  * used ONLY for the "iotsim" permission on the node accounts.
- * See https://telos.bloks.io/account/eosiot11node#keys.
+ * See https://eosauthority.com/account/eosiot11node?network=telostest#keys.
+ *     https://explorer-test.telos.net/key/EOS82rGcJWkHYhYK2NfGCHTuWZ1fGNE7ar2V8DCp3EjRkXDTvoJ7M
+ *     https://eosauthority.com/key/EOS82rGcJWkHYhYK2NfGCHTuWZ1fGNE7ar2V8DCp3EjRkXDTvoJ7M?network=telostest
  * This key allows you to run this simulation out-of-the-box using the resources assigned to these accounts
  * without having to create your own.
  * This private key does NOT correspond to any active or owner keys so don't bother trying.
  */ 
-const IOTSIM_PERMISSION_KEY = "5Jh8vmcNET9RL1SeUwHCmTADYGpMYYK5NtpJa52RWBejGPZ5fj3";
+const IOTSIM_PERMISSION_KEY = "5Hy7DypZPdLMk554DtLeUZCwncYpGA5TPC7poSL7a1bu1n4BAMh";
 
 /* Array of on-chain accounts to be randomly assigned to simulated IoT nodes
  * and to which the network resource usage are charged. 
@@ -330,8 +332,8 @@ async function main() {
         tapos = await buildApiPool(BOOTSTRAP_INFO_EOS_MAINNET);
     } else if (USE_TELOS_MAINNET) {
         tapos = await buildApiPool(BOOTSTRAP_INFO_TELOS_MAINNET);
-    } else if (USE_JUNGLE_TESTNET) {
-        tapos = await buildApiPool(BOOTSTRAP_INFO_JUNGLE2_TESTNET);
+    } else if (USE_TELOS_TESTNET) {
+        tapos = await buildApiPool(BOOTSTRAP_INFO_TELOS_TESTNET);
     }
 
     /* Reset the stress contract */
@@ -412,7 +414,7 @@ function runNode(node)
 
     var name = node.account;
     node.tx_count++;
-    console.log("running node " + node.id + " " + name + " (tx:"+node.tx_count+") expire in " + expiry + " s");
+    console.log("running node " + node.id + " " + name + " (tx:" + node.tx_count + ") expire in " + expiry + " s to " + node.endpoint);
     if (node.init) {
         /* One time only set the periodic uplink interval */
         console.log("   set interval.");
